@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Ollama</id>
+    <id>ollama</id>
     <version>0.1.26</version>
     <title>Ollama Large Language Models</title>
     <authors>Jeffrey Morgan</authors>
