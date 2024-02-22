@@ -45,9 +45,6 @@ jobs:
 
       - name: Push Chocolatey Package
         run: |
-          # Navigate to the directory containing your nuspec file
-          cd path/to/your/package
-
           # Find the .nupkg file to push
           $package = Get-ChildItem -Path . -Filter *.nupkg
 
