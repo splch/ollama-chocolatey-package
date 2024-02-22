@@ -7,10 +7,11 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**.md" # Ignore markdown files or other files that wouldn't affect the package
 
 jobs:
   pack:
-    if: github.event_name == 'pull_request'
     runs-on: windows-latest
     steps:
       - name: Check out code
@@ -32,7 +33,7 @@ jobs:
           Write-Host "Package packed: $($package.FullName)"
 
   deploy:
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     needs: [pack]
     runs-on: windows-latest
     steps:
