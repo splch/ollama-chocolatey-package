@@ -1,0 +1,54 @@
+name: Chocolatey Package Actions
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  pack:
+    if: github.event_name == 'pull_request'
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+
+      - name: Pack Chocolatey Package
+        run: |
+          # Pack the Chocolatey package
+          choco pack
+
+          # Find the .nupkg file that was just created
+          $package = Get-ChildItem -Path . -Filter *.nupkg
+          Write-Host "Package packed: $($package.FullName)"
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: [pack]
+    runs-on: windows-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Chocolatey
+        run: |
+          choco apikey set --key ${{secrets.CHOCO_API_KEY}} --source https://push.chocolatey.org/
+
+      - name: Push Chocolatey Package
+        run: |
+          # Find the .nupkg file to push
+          $package = Get-ChildItem -Path . -Filter *.nupkg
+
+          # Push the package to Chocolatey
+          choco push $package.FullName --source https://push.chocolatey.org/
+        env:
+          CHOCO_API_KEY: ${{secrets.CHOCO_API_KEY}}

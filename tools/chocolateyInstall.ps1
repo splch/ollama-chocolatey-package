@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop';
 $packageName = 'Ollama'
-$url = 'https://ollama.com/download/OllamaSetup.exe'
+$url = 'https://github.com/ollama/ollama/releases/download/v0.1.26/OllamaSetup.exe'
 $installerType = 'exe'
 $silentArgs = '/S'
 $validExitCodes = @(0)
