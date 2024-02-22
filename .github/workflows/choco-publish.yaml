@@ -44,12 +44,21 @@ jobs:
         run: |
           choco apikey --api-key ${{secrets.CHOCO_API_KEY}} --source https://push.chocolatey.org/
 
+      - name: Pack Chocolatey Package
+        run: |
+          # Pack the Chocolatey package
+          choco pack
+
+          # Find the .nupkg file that was just created
+          $package = Get-ChildItem -Path . -Filter *.nupkg
+          Write-Host "Package packed: $($package.FullName)"
+
       - name: Push Chocolatey Package
         run: |
-          # Find all .nupkg files matching the pattern "Ollama*.nupkg"
-          $packages = Get-ChildItem -Path . -Filter 'Ollama*.nupkg' -Name
+          # Find the .nupkg file matching the pattern "Ollama*.nupkg"
+          $package = Get-ChildItem -Path . -Filter "Ollama*.nupkg" -Name
 
-          # Push the package to Chocolatey
-          choco push $package.FullName --source https://push.chocolatey.org/
+          # Push the package to Chocolatey, specifying the full path
+          choco push "$package" --source 'https://push.chocolatey.org/' -apiKey ${{ secrets.CHOCO_API_KEY }}
         env:
           CHOCO_API_KEY: ${{secrets.CHOCO_API_KEY}}
