@@ -46,8 +46,8 @@ jobs:
 
       - name: Push Chocolatey Package
         run: |
-          # Find the .nupkg file to push
-          $package = Get-ChildItem -Path . -Filter *.nupkg
+          # Find all .nupkg files matching the pattern "Ollama*.nupkg"
+          $packages = Get-ChildItem -Path . -Filter 'Ollama*.nupkg' -Name
 
           # Push the package to Chocolatey
           choco push $package.FullName --source https://push.chocolatey.org/
