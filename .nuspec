@@ -3,7 +3,7 @@
   <metadata>
     <id>Ollama</id>
     <version>0.1.26</version>
-    <title>Ollama</title>
+    <title>Ollama Large Language Models</title>
     <authors>Jeffrey Morgan</authors>
     <owners>Spencer Churchill</owners>
     <licenseUrl>https://github.com/ollama/ollama/blob/main/LICENSE</licenseUrl>
@@ -11,8 +11,13 @@
     <iconUrl>https://ollama.com/public/ollama.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Get up and running with large language models locally with Ollama.</description>
+    <summary>Effortlessly run large language models locally with Ollama.</summary> <!-- Added summary -->
     <releaseNotes>Initial release of Ollama package.</releaseNotes>
     <tags>ollama llm models local</tags>
+    <packageSourceUrl>https://github.com/splch/ollama-chocolatey-package</packageSourceUrl> <!-- Added packageSourceUrl -->
+    <docsUrl>https://github.com/ollama/ollama/tree/main/docs</docsUrl>
+    <bugTrackerUrl>https://github.com/ollama/ollama/issues</bugTrackerUrl>
+    <projectSourceUrl>https://github.com/ollama/ollama</projectSourceUrl>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
