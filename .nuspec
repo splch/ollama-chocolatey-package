@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Ollama</id>
+    <version>0.1.26</version>
+    <title>Ollama</title>
+    <authors>Jeffrey Morgan</authors>
+    <owners>Spencer Churchill</owners>
+    <licenseUrl>https://github.com/ollama/ollama/blob/main/LICENSE</licenseUrl>
+    <projectUrl>https://ollama.com/</projectUrl>
+    <iconUrl>https://ollama.com/public/ollama.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Get up and running with large language models locally with Ollama.</description>
+    <releaseNotes>Initial release of Ollama package.</releaseNotes>
+    <tags>ollama llm models local</tags>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
