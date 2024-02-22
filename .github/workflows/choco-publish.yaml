@@ -11,7 +11,7 @@ on:
       - "**.md"
 
 jobs:
-  pack:
+  build_and_deploy:
     runs-on: windows-latest
     steps:
       - name: Check out code
@@ -19,48 +19,21 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Install Chocolatey
-        run: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-          Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-
       - name: Pack Chocolatey Package
         run: |
-          # Pack the Chocolatey package
           choco pack
-
-          # Find the .nupkg file that was just created
-          $package = Get-ChildItem -Path . -Filter *.nupkg
+          $package = Get-ChildItem -Path . -Filter "Ollama*.nupkg"
           Write-Host "Package packed: $($package.FullName)"
 
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: [pack]
-    runs-on: windows-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set up Chocolatey
+      - name: Set up Chocolatey for Push
+        if: github.ref == 'refs/heads/main'
         run: |
-          choco apikey --api-key ${{secrets.CHOCO_API_KEY}} --source https://push.chocolatey.org/
-
-      - name: Pack Chocolatey Package
-        run: |
-          # Pack the Chocolatey package
-          choco pack
-
-          # Find the .nupkg file that was just created
-          $package = Get-ChildItem -Path . -Filter *.nupkg
-          Write-Host "Package packed: $($package.FullName)"
+          choco apikey --api-key ${{ secrets.CHOCO_API_KEY }} --source https://push.chocolatey.org/
 
       - name: Push Chocolatey Package
+        if: github.ref == 'refs/heads/main'
         run: |
-          # Find the .nupkg file matching the pattern "Ollama*.nupkg"
           $package = Get-ChildItem -Path . -Filter "Ollama*.nupkg" -Name
-
-          # Push the package to Chocolatey, specifying the full path
           choco push "$package" --source 'https://push.chocolatey.org/' -apiKey ${{ secrets.CHOCO_API_KEY }}
         env:
-          CHOCO_API_KEY: ${{secrets.CHOCO_API_KEY}}
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
