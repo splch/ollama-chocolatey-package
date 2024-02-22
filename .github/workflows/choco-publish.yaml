@@ -33,7 +33,7 @@ jobs:
           Write-Host "Package packed: $($package.FullName)"
 
   deploy:
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: [pack]
     runs-on: windows-latest
     steps:
@@ -44,14 +44,19 @@ jobs:
         run: |
           choco apikey --api-key ${{secrets.CHOCO_API_KEY}} --source https://push.chocolatey.org/
 
-      - name: Push Chocolatey Package
-        shell: pwsh
+      - name: Pack Chocolatey Package
         run: |
-          # Change to the directory where the .nupkg file is located
-          cd ${{ github.workspace }}
+          # Pack the Chocolatey package
+          choco pack
 
+          # Find the .nupkg file that was just created
+          $package = Get-ChildItem -Path . -Filter *.nupkg
+          Write-Host "Package packed: $($package.FullName)"
+
+      - name: Push Chocolatey Package
+        run: |
           # Find the .nupkg file matching the pattern "Ollama*.nupkg"
-          $packagePath = Get-ChildItem -Path . -Filter 'Ollama*.nupkg' | Select-Object -First 1 -ExpandProperty FullName
+          $package = Get-ChildItem -Path . -Filter "Ollama*.nupkg" -Name
 
           # Push the package to Chocolatey, specifying the full path
           choco push "$package" --source 'https://push.chocolatey.org/' -apiKey ${{ secrets.CHOCO_API_KEY }}
