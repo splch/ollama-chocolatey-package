@@ -45,15 +45,15 @@ jobs:
           choco apikey --api-key ${{secrets.CHOCO_API_KEY}} --source https://push.chocolatey.org/
 
       - name: Push Chocolatey Package
+        shell: pwsh
         run: |
           # Change to the directory where the .nupkg file is located
           cd ${{ github.workspace }}
 
           # Find the .nupkg file matching the pattern "Ollama*.nupkg"
-          $package = Get-ChildItem -Path .\ -Filter 'Ollama*.nupkg' -Name | Select-Object -First 1
+          $packagePath = Get-ChildItem -Path . -Filter 'Ollama*.nupkg' | Select-Object -First 1 -ExpandProperty FullName
 
           # Push the package to Chocolatey, specifying the full path
           choco push "$package" --source 'https://push.chocolatey.org/' -apiKey ${{ secrets.CHOCO_API_KEY }}
-        shell: pwsh
         env:
           CHOCO_API_KEY: ${{secrets.CHOCO_API_KEY}}
